@@ -12,35 +12,34 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChatController = void 0;
+exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
-let ChatController = class ChatController {
-    constructor() {
-        this.messages = [];
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+const user_schema_1 = require("./schema/user.schema");
+let UsersService = class UsersService {
+    constructor(userModel) {
+        this.userModel = userModel;
     }
-    sendMessage(message) {
-        this.messages.push(message);
-        return { message: 'Message sent successfully!' };
+    async create(createUserDto) {
+        console.log('yoloooo');
+        const createdUser = new this.userModel(createUserDto);
+        console.log('createUser', createdUser);
+        return createdUser.save();
     }
-    getMessages() {
-        return this.messages;
+    async findAll() {
+        const usersDB = await this.userModel.find().exec();
+        console.log('db users', usersDB);
+        return usersDB;
+    }
+    async findOne(id) {
+        return this.userModel.findById(id).exec();
     }
 };
-exports.ChatController = ChatController;
-__decorate([
-    (0, common_1.Post)('send'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], ChatController.prototype, "sendMessage", null);
-__decorate([
-    (0, common_1.Get)('messages'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], ChatController.prototype, "getMessages", null);
-exports.ChatController = ChatController = __decorate([
-    (0, common_1.Controller)('api/chat')
-], ChatController);
-//# sourceMappingURL=chat.controller.js.map
+exports.UsersService = UsersService;
+exports.UsersService = UsersService = __decorate([
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model])
+], UsersService);
+//# sourceMappingURL=users.service.js.map
