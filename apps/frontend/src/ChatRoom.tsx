@@ -20,7 +20,7 @@ const ChatRoom: React.FC = () => {
     });
 
     return () => {
-      socket.off("receive_message"); // Clean up listener
+      socket.off("receive_message");
     };
   }, []);
 
@@ -30,8 +30,8 @@ const ChatRoom: React.FC = () => {
     if (!input || !username) return;
 
     const message: Message = { sender: username, content: input };
-    socket.emit("send_message", message); // Send message to server
-    setInput(""); // Clear input field
+    socket.emit("send_message", message);
+    setInput("");
   };
 
   return (
@@ -49,30 +49,30 @@ const ChatRoom: React.FC = () => {
         </label>
       </div>
 
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "10px",
-          height: "300px",
-          overflowY: "scroll",
-          marginBottom: "20px",
-        }}
-      >
-        {messages.map((msg, index) => (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            <strong>{msg.sender}:</strong> {msg.content}
-          </div>
-        ))}
+      <div className="chat-container w-full max-w-xl mx-auto mt-10">
+        <div className="messages-container h-96 overflow-y-auto p-4 space-y-4 bg-gray-100 rounded-lg">
+          {messages.map((msg, index) => (
+            <div key={index} style={{ marginBottom: "10px" }}>
+              <strong>{msg.sender}:</strong> {msg.content}
+            </div>
+          ))}
+        </div>
       </div>
 
-      <form onSubmit={handleSendMessage}>
+      <form
+        onSubmit={handleSendMessage}
+        className="flex items-center space-x-2 w-full max-w-xl mx-auto"
+      >
         <input
+          className="flex-grow p-2 border border-gray-300 rounded-lg"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Entrez un message..."
         />
-        <button type="submit">Send</button>
+        <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">
+          Envoyer
+        </button>
       </form>
     </div>
   );

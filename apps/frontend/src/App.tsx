@@ -3,7 +3,7 @@ import ChatRoom from "./ChatRoom";
 function App() {
   return (
     <div>
-      <h1>Real-Time Chat</h1>
+      <h1>Chat A Way</h1>
       <ChatRoom />
     </div>
   );
