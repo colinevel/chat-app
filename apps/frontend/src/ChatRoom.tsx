@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { useAuth } from "./auth/AuthContext";
 
 interface Message {
   sender: string;
@@ -8,10 +9,11 @@ interface Message {
 
 const socket: Socket = io("http://localhost:3000"); // Replace with your backend URL
 
-const ChatRoom: React.FC = () => {
+const ChatRoom = ({ openModal }: { openModal: () => void }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [username, setUsername] = useState("");
+
+  const { user } = useAuth();
 
   // Listen for incoming messages
   useEffect(() => {
@@ -27,28 +29,21 @@ const ChatRoom: React.FC = () => {
   // Handle message submission
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input || !username) return;
 
-    const message: Message = { sender: username, content: input };
+    if (!user) {
+      openModal();
+      return
+    }
+
+    if (!input) return;
+
+    const message: Message = { sender: "Coline", content: input };
     socket.emit("send_message", message);
     setInput("");
   };
 
   return (
     <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter your name"
-            style={{ marginLeft: "10px" }}
-          />
-        </label>
-      </div>
-
       <div className="chat-container w-full max-w-xl mx-auto mt-10">
         <div className="messages-container h-96 overflow-y-auto p-4 space-y-4 bg-gray-100 rounded-lg">
           {messages.map((msg, index) => (
@@ -70,7 +65,7 @@ const ChatRoom: React.FC = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Entrez un message..."
         />
-        <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">
+        <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary_light">
           Envoyer
         </button>
       </form>
