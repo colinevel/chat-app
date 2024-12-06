@@ -12,20 +12,13 @@ export class UsersController {
   @Post('create')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    const user = {
-      _id: '1234',
-      pseudo: 'coline',
-      email: 'test@example.com',
-      password: 'xxxxx',
-    };
-    return await this.usersService.create(user);
+    return await this.usersService.createUser(createUserDto);
   }
 
   // Get all users
   @Get('all')
   async findAll(): Promise<User[]> {
     const users = await this.usersService.findAll();
-    console.log('users', users);
     return users;
   }
 

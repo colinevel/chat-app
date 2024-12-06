@@ -9,7 +9,7 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
-    origin: 'http://localhost:3001', // Replace with your React app's URL
+    origin: 'http://localhost:3001',
     methods: ['GET', 'POST'],
   },
 })
@@ -32,7 +32,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('send_message')
   handleMessage(client: Socket, message: { sender: string; content: string }) {
-    console.log('eee', message);
     this.server.emit('receive_message', message); // Broadcast the message to all clients
   }
 }

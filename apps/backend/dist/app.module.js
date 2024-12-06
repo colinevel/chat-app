@@ -11,21 +11,13 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const auth_module_1 = require("./auth/auth.module");
 const chat_module_1 = require("./chat/chat.module");
-const schema_1 = require("./config/schema");
+const env_variables_1 = require("./config/env_variables");
 const users_module_1 = require("./users/users.module");
 let AppModule = class AppModule {
     onModuleInit() {
         mongoose_2.default.set('debug', true);
-        mongoose_2.default.connection.on('connected', () => {
-            console.log('Connected to MongoDB successfully');
-        });
-        mongoose_2.default.connection.on('error', (err) => {
-            console.error(`MongoDB connection error: ${err}`);
-        });
-        mongoose_2.default.connection.on('disconnected', () => {
-            console.log('Disconnected from MongoDB');
-        });
     }
 };
 exports.AppModule = AppModule;
@@ -36,7 +28,7 @@ exports.AppModule = AppModule = __decorate([
                 load: [() => ({ ...process.env })],
                 isGlobal: true,
                 validate: (config) => {
-                    const parsedConfig = schema_1.configSchema.safeParse(config);
+                    const parsedConfig = env_variables_1.configSchema.safeParse(config);
                     if (!parsedConfig.success) {
                         throw new Error(`Configuration validation failed: ${parsedConfig.error}`);
                     }
@@ -45,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
             }),
             chat_module_1.ChatModule,
             users_module_1.UsersModule,
+            auth_module_1.AuthModule,
             mongoose_1.MongooseModule.forRootAsync({
                 useFactory: async (configService) => ({
                     uri: configService.get('MONGODB_URI'),

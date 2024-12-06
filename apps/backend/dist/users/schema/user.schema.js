@@ -12,11 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserSchema = exports.User = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
+const uuid_1 = require("uuid");
 let User = class User extends mongoose_2.Document {
 };
 exports.User = User;
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: true, default: uuid_1.v4 }),
     __metadata("design:type", String)
 ], User.prototype, "_id", void 0);
 __decorate([

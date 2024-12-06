@@ -21,17 +21,10 @@ let UsersController = class UsersController {
         this.usersService = usersService;
     }
     async create(createUserDto) {
-        const user = {
-            _id: '1234',
-            pseudo: 'coline',
-            email: 'test@example.com',
-            password: 'xxxxx',
-        };
-        return await this.usersService.create(user);
+        return await this.usersService.createUser(createUserDto);
     }
     async findAll() {
         const users = await this.usersService.findAll();
-        console.log('users', users);
         return users;
     }
     async findOne(id) {

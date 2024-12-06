@@ -25,7 +25,6 @@ let ChatGateway = class ChatGateway {
         this.server.emit('users', this.users);
     }
     handleMessage(client, message) {
-        console.log('eee', message);
         this.server.emit('receive_message', message);
     }
 };

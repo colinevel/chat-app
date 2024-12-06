@@ -15,17 +15,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const bcrypt = require("bcrypt");
 const mongoose_2 = require("mongoose");
 const user_schema_1 = require("./schema/user.schema");
 let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
     }
-    async create(createUserDto) {
-        console.log('yoloooo');
-        const createdUser = new this.userModel(createUserDto);
-        console.log('createUser', createdUser);
+    async createUser(createUserDto) {
+        const { password, email, pseudo } = createUserDto;
+        const existingUser = await this.userModel.findOne({ email });
+        if (existingUser) {
+            throw new common_1.BadRequestException('Email is already in use');
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const createdUser = new this.userModel({
+            email,
+            pseudo,
+            password: hashedPassword,
+        });
         return createdUser.save();
+    }
+    async findUserByEmail(email) {
+        return this.userModel.findOne({ email });
+    }
+    async validatePassword(password, hashedPassword) {
+        return bcrypt.compare(password, hashedPassword);
     }
     async findAll() {
         const usersDB = await this.userModel.find().exec();
