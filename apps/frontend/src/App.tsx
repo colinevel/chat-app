@@ -17,7 +17,7 @@ function App() {
           <Route path="/" element={<ChatRoom openModal={handleOpenModal} />} />
         </Routes>
         {isModalOpen && (
-          <Modal isOpen={isModalOpen} onClose={handleCloseModal} />
+          <Modal isOpen={isModalOpen} onClose={handleCloseModal}/>
         )}
       </div>
     </Router>

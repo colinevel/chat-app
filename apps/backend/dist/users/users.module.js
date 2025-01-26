@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersModule = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const user_schema_1 = require("./schema/user.schema");
 const users_controller_1 = require("./users.controller");
@@ -21,7 +22,7 @@ exports.UsersModule = UsersModule = __decorate([
             mongoose_1.MongooseModule.forFeature([{ name: user_schema_1.User.name, schema: user_schema_1.UserSchema }]),
         ],
         controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService],
+        providers: [users_service_1.UsersService, jwt_1.JwtService],
         exports: [users_service_1.UsersService],
     })
 ], UsersModule);

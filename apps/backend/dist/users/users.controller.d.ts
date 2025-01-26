@@ -7,4 +7,5 @@ export declare class UsersController {
     create(createUserDto: CreateUserDto): Promise<User>;
     findAll(): Promise<User[]>;
     findOne(id: string): Promise<User | null>;
+    getUser(req: any): Promise<User>;
 }

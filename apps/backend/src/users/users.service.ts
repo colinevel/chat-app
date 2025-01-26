@@ -43,7 +43,6 @@ export class UsersService {
   // Find all users
   async findAll(): Promise<User[]> {
     const usersDB = await this.userModel.find().exec();
-    console.log('db users', usersDB);
 
     return usersDB;
   }

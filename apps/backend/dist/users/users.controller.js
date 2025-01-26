@@ -16,6 +16,7 @@ exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_create_users_dto_1 = require("./dto/users.create-users.dto");
 const users_service_1 = require("./users.service");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -29,6 +30,13 @@ let UsersController = class UsersController {
     }
     async findOne(id) {
         return this.usersService.findOne(id);
+    }
+    async getUser(req) {
+        const user = await this.usersService.findUserByEmail(req.user.email);
+        if (!user) {
+            throw new common_1.UnauthorizedException('User not found');
+        }
+        return user;
     }
 };
 exports.UsersController = UsersController;
@@ -52,6 +60,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.AuthGuard),
+    (0, common_1.Get)('getUser'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUser", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

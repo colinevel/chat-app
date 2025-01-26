@@ -1,44 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-import { useAuth } from "./auth/AuthContext";
+import { useAuthContext } from "./auth/AuthContext";
 
 interface Message {
   sender: string;
   content: string;
 }
-
-const socket: Socket = io("http://localhost:3000"); // Replace with your backend URL
+// Replace with your backend URL
 
 const ChatRoom = ({ openModal }: { openModal: () => void }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
-  // Listen for incoming messages
   useEffect(() => {
-    socket.on("receive_message", (message: Message) => {
-      setMessages((prev) => [...prev, message]);
-    });
+    const token = localStorage.getItem("token");
+    if (token && user) {
+      const newSocket = io("http://localhost:3000", {
+        query: { token },
+      });
+      setSocket(newSocket);
 
-    return () => {
-      socket.off("receive_message");
-    };
-  }, []);
+      newSocket.on("receive_message", (message: Message) => {
+        setMessages((prev) => [...prev, message]);
+      });
+
+      return () => {
+        newSocket.off("receive_message");
+        newSocket.close();
+      };
+    }
+  }, [user]);
+
+  const handleLogin = () => {
+    openModal();
+  };
 
   // Handle message submission
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!user) {
-      openModal();
-      return
-    }
-
     if (!input) return;
-
-    const message: Message = { sender: "Coline", content: input };
-    socket.emit("send_message", message);
+    if (!user) return;
+    const message: Message = { sender: user?.pseudo, content: input };
+    socket?.emit("send_message", message);
     setInput("");
   };
 
@@ -69,6 +75,12 @@ const ChatRoom = ({ openModal }: { openModal: () => void }) => {
           Envoyer
         </button>
       </form>
+      <button
+        onClick={handleLogin}
+        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary_light"
+      >
+        Login
+      </button>
     </div>
   );
 };

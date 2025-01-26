@@ -44,7 +44,6 @@ let UsersService = class UsersService {
     }
     async findAll() {
         const usersDB = await this.userModel.find().exec();
-        console.log('db users', usersDB);
         return usersDB;
     }
     async findOne(id) {

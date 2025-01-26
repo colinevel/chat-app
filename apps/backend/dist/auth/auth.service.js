@@ -27,9 +27,9 @@ let AuthService = class AuthService {
         return null;
     }
     async login(user) {
-        const payload = { email: user.email, sub: user._id };
+        const payload = { email: user.email, sub: user._id, pseudo: user.pseudo };
         return {
-            accessToken: this.jwtService.sign(payload),
+            accessToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
         };
     }
     async signup(pseudo, email, password) {
